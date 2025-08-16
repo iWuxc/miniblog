@@ -3,6 +3,7 @@ package options
 import (
 	"errors"
 	"fmt"
+	"github.com/iWuxc/miniblog/internal/apiserver"
 	"github.com/spf13/pflag"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/util/sets"
@@ -45,6 +46,7 @@ func (o *ServerOptions) AddFlags(fs *pflag.FlagSet) {
 	fs.DurationVar(&o.Expiration, "expiration", o.Expiration, "The expiration duration of JWT tokens.")
 }
 
+// Validate 校验 ServerOptions 中的选项是否合法.
 func (o *ServerOptions) Validate() error {
 	errs := []error{}
 
@@ -60,4 +62,13 @@ func (o *ServerOptions) Validate() error {
 
 	// 合并所有错误并返回
 	return utilerrors.NewAggregate(errs)
+}
+
+// Config 基于 ServerOptions 构建 apiserver.Config.
+func (o *ServerOptions) Config() (*apiserver.Config, error) {
+	return &apiserver.Config{
+		ServerMode: o.ServerMode,
+		JWTKey:     o.JWTKey,
+		Expiration: o.Expiration,
+	}, nil
 }
