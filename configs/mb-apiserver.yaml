@@ -1,0 +1,11 @@
+# 服务期类型， 可选值有
+# grpc： 启动一个grpc服务
+# grpc-gateway: 启动一个grpc服务器 + http反向代理服务器
+# gin：基于gin框架启动一个http服务器
+# 服务器模式选择
+# - 应用内部调用选择 grpc
+# - 如果由外部服务调用选择 grpc-gateway
+# - 学习gin框架是选择gin
+server-mode: grpc-gateway
+#JWT 签发秘钥
+jwt-key: Rtg8BPKNEf2mB4mgvKONGPZZQSaJWNLijxR42qRgq0iBb5
