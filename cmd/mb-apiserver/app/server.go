@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/iWuxc/miniblog/cmd/mb-apiserver/app/options"
+	"github.com/iWuxc/miniblog/pkg/version"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -61,11 +62,17 @@ The project features include:
 	// 将 ServerOptions 中的选项绑定到命令标志
 	opts.AddFlags(cmd.PersistentFlags())
 
+	// 添加 --version 标志
+	version.AddFlags(cmd.PersistentFlags())
+
 	return cmd
 }
 
 // run 是主运行逻辑，负责初始化日志、解析配置、校验选项并启动服务器。
 func run(opts *options.ServerOptions) error {
+	// 如果传入 --version，则打印版本信息并退出
+	version.PrintAndExitIfRequested()
+
 	// 将viper中的配置解析到选项opts变量中
 	if err := viper.Unmarshal(opts); err != nil {
 		return err
