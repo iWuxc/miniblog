@@ -3,6 +3,7 @@ package apiserver
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/iWuxc/miniblog/internal/pkg/log"
 	"github.com/spf13/viper"
 	"time"
 )
@@ -28,8 +29,8 @@ func (cfg *Config) NewUnionServer() (*UnionServer, error) {
 }
 
 func (s *UnionServer) Run() error {
-	fmt.Printf("ServerMode from ServerOptions: %s\n", s.cfg.JWTKey)
-	fmt.Printf("ServerMode from Viper: %s\n\n", viper.GetString("jwt-key"))
+	log.Infow("ServerMode from ServerOptions", "jwt-key", s.cfg.JWTKey)
+	log.Infow("ServerMode from ServerOptions", "jwt-key", viper.GetString("jwt-key"))
 	jsonData, _ := json.MarshalIndent(s.cfg, "", "  ")
 	fmt.Println(string(jsonData))
 

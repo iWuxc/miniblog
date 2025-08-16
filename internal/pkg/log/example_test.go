@@ -1,0 +1,35 @@
+package log_test
+
+import (
+	log2 "github.com/iWuxc/miniblog/internal/pkg/log"
+	"testing"
+	"time"
+)
+
+func TestLogger(t *testing.T) {
+	// 自定义日志配置
+	opts := &log2.Options{
+		Level:             "debug",            // 设置日志级别为 debug
+		Format:            "json",             // 设置日志格式为 JSON
+		DisableCaller:     false,              // 显示调用日志的文件和行号
+		DisableStacktrace: false,              // 允许打印堆栈信息
+		OutputPaths:       []string{"stdout"}, // 将日志输出到标准输出
+	}
+
+	// 初始化全局日志对象
+	log2.Init(opts)
+
+	// 测试不同级别的日志输出
+	log2.Debugw("This is a debug message", "key1", "value1", "key2", 123)
+	log2.Infow("This is an info message", "key", "value")
+	log2.Warnw("This is a warning message", "timestamp", time.Now())
+	log2.Errorw("This is an error message", "error", "something went wrong")
+
+	// 注意：Panicw 和 Fatalw 会中断程序运行，因此在测试中应小心使用。
+	// 可以注释掉以下两行进行测试，或者在单独的环境中运行。
+	// log.Panicw("This is a panic message", "reason", "unexpected situation")
+	// log.Fatalw("This is a fatal message", "reason", "critical failure")
+
+	// 确保日志缓冲区被刷新
+	log2.Sync()
+}
