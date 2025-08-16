@@ -42,7 +42,7 @@ all: tidy format build add-copyright
 #定义Makefile其他目标，执行 make clean 时，执行该目标
 .PHONY: build
 build: tidy
-	@go build -v -o $(OUTPUT_DIR)/mb-apiserver $(PROJ_ROOT_DIR)/cmd/mb-apiserver/main.go
+	@go build -v -ldflags "$(GO_LDFLAGS)" -o $(OUTPUT_DIR)/mb-apiserver $(PROJ_ROOT_DIR)/cmd/mb-apiserver/main.go
 
 .PHONY: format
 format:
