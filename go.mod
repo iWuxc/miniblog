@@ -4,13 +4,16 @@ go 1.24.0
 
 require (
 	github.com/gosuri/uitable v0.0.4
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1
 	github.com/onexstack/onexstack v0.0.2
+	github.com/prometheus/common v0.65.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.7
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
 	go.uber.org/automaxprocs v1.6.0
 	go.uber.org/zap v1.27.0
+	google.golang.org/genproto/googleapis/api v0.0.0-20250811230008-5f3141c8851a
 	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.7
 	k8s.io/apimachinery v0.33.4
@@ -40,7 +43,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/google/wire v0.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
@@ -63,7 +65,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.23.0 // indirect
 	github.com/prometheus/client_model v0.6.2 // indirect
-	github.com/prometheus/common v0.65.0 // indirect
 	github.com/prometheus/procfs v0.17.0 // indirect
 	github.com/redis/go-redis/extra/rediscensus/v9 v9.12.1 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.12.1 // indirect
@@ -97,7 +98,6 @@ require (
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250811230008-5f3141c8851a // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250811230008-5f3141c8851a // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

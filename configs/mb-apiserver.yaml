@@ -28,3 +28,7 @@ log:
 grpc:
   #grpc服务器监听的地址
   addr: :6666
+# Http服务器相关配置
+http:
+  #HTTP服务器监听的地址
+  addr: :5555

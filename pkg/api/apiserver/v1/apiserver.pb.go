@@ -10,6 +10,8 @@
 package v1
 
 import (
+	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -28,9 +30,11 @@ var File_apiserver_v1_apiserver_proto protoreflect.FileDescriptor
 
 const file_apiserver_v1_apiserver_proto_rawDesc = "" +
 	"\n" +
-	"\x1capiserver/v1/apiserver.proto\x12\x02v1\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1aapiserver/v1/healthz.proto2D\n" +
-	"\bMiniBlog\x128\n" +
-	"\aHealthz\x12\x16.google.protobuf.Empty\x1a\x13.v1.HealthzResponse\"\x00B3Z1github.com/iWuxc/miniblog/pkg/api/apiserver/v1;v1b\x06proto3"
+	"\x1capiserver/v1/apiserver.proto\x12\x02v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1aapiserver/v1/healthz.proto\x1a.protoc-gen-openapiv2/options/annotations.proto2\x82\x01\n" +
+	"\bMiniBlog\x12v\n" +
+	"\aHealthz\x12\x16.google.protobuf.Empty\x1a\x13.v1.HealthzResponse\">\x92A+\n" +
+	"\f服务治理\x12\x12服务健康检查*\aHealthz\x82\xd3\xe4\x93\x02\n" +
+	"\x12\b/healthzB3Z1github.com/iWuxc/miniblog/pkg/api/apiserver/v1;v1b\x06proto3"
 
 var file_apiserver_v1_apiserver_proto_goTypes = []any{
 	(*emptypb.Empty)(nil),   // 0: google.protobuf.Empty
