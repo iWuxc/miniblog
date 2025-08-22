@@ -1,3 +1,9 @@
+# Copyright 2025 武晓晨 <wuxc.eng@gmail.com>. All rights reserved.
+# Use of this source code is governed by a MIT style
+# license that can be found in the LICENSE file. The original repo for
+# this file is https://github.com/iWuxc/miniblog. The professional
+# version of this repository is https://github.com/onexstack/onex.
+
 # 服务期类型， 可选值有
 # grpc： 启动一个grpc服务
 # grpc-gateway: 启动一个grpc服务器 + http反向代理服务器
@@ -6,7 +12,7 @@
 # - 应用内部调用选择 grpc
 # - 如果由外部服务调用选择 grpc-gateway
 # - 学习gin框架是选择gin
-server-mode: grpc-gateway
+server-mode: grpc
 #JWT 签发秘钥
 jwt-key: Rtg8BPKNEf2mB4mgvKONGPZZQSaJWNLijxR42qRgq0iBb5
 
