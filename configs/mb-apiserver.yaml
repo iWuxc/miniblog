@@ -12,7 +12,7 @@
 # - 应用内部调用选择 grpc
 # - 如果由外部服务调用选择 grpc-gateway
 # - 学习gin框架是选择gin
-server-mode: grpc
+server-mode: gin
 #JWT 签发秘钥
 jwt-key: Rtg8BPKNEf2mB4mgvKONGPZZQSaJWNLijxR42qRgq0iBb5
 
