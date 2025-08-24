@@ -6,16 +6,21 @@
 
 package http
 
-import "github.com/iWuxc/miniblog/internal/apiserver/biz"
+import (
+	"github.com/iWuxc/miniblog/internal/apiserver/biz"
+	validation "github.com/iWuxc/miniblog/internal/apiserver/pkg/vaildation"
+)
 
 // Handler 处理博客模块的请求.
 type Handler struct {
 	biz biz.IBiz
+	val *validation.Validator
 }
 
 // NewHandler 创建新的 Handler 实例.
-func NewHandler(biz biz.IBiz) *Handler {
+func NewHandler(biz biz.IBiz, val *validation.Validator) *Handler {
 	return &Handler{
 		biz: biz,
+		val: val,
 	}
 }

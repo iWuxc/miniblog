@@ -9,6 +9,7 @@ package apiserver
 import (
 	"context"
 	"github.com/iWuxc/miniblog/internal/apiserver/biz"
+	validation "github.com/iWuxc/miniblog/internal/apiserver/pkg/vaildation"
 	"github.com/iWuxc/miniblog/internal/apiserver/store"
 	"github.com/iWuxc/miniblog/internal/pkg/contextx"
 	"github.com/iWuxc/miniblog/internal/pkg/known"
@@ -65,6 +66,7 @@ type UnionServer struct {
 type ServerConfig struct {
 	cfg *Config
 	biz biz.IBiz
+	val *validation.Validator
 }
 
 // NewUnionServer 根据配置创建联合服务器.
@@ -144,6 +146,7 @@ func (cfg *Config) NewServerConfig() (*ServerConfig, error) {
 	return &ServerConfig{
 		cfg: cfg,
 		biz: biz.NewBiz(store),
+		val: validation.New(store),
 	}, nil
 }
 

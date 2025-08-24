@@ -27,5 +27,5 @@ func (h *Handler) GetPost(c *gin.Context) {
 
 // ListPosts 列出用户的所有博客帖子.
 func (h *Handler) ListPost(c *gin.Context) {
-	core.HandleQueryRequest(c, h.biz.PostV1().List)
+	core.HandleQueryRequest(c, h.biz.PostV1().List, h.val.ValidateListPostRequest)
 }
