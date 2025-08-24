@@ -46,10 +46,41 @@ func (c *ServerConfig) InstallRESTAPI(engine *gin.Engine) {
 	InstallGenericAPI(engine)
 
 	//创建核心业务处理器
-	handler := handler.NewHandler()
+	handler := handler.NewHandler(c.biz)
 
 	//注册健康检查接口
 	engine.GET("/healthz", handler.Healthz)
+
+	// 注册用户登录和令牌刷新接口。这两个接口比较简单，所以没有API版本
+	engine.POST("/login", handler.Login)
+	engine.PUT("refresh-token", handler.RefreshToken)
+
+	var authMiddlewares []gin.HandlerFunc
+
+	// 注册 v1 版本 API 路由分组
+	v1 := engine.Group("v1")
+	{
+		// 用户相关理由
+		userv1 := v1.Group("/users")
+		{
+			// 创建用户。这里要注意：创建用户是不用进行认证和授权的
+			userv1.POST("", handler.CreateUser)
+			userv1.Use(authMiddlewares...)
+			userv1.PUT(":userID/change-password", handler.ChangePassword) //修改用户密码
+			userv1.PUT(":userID", handler.UpdateUser)                     // 跟新用户信息
+			userv1.DELETE(":userID", handler.DeleteUser)                  //删除用户
+			userv1.GET(":userID", handler.GetUser)                        //获取用户信息
+			userv1.GET("", handler.ListUser)                              //查询用户列表
+		}
+		postv1 := v1.Group("/posts", authMiddlewares...)
+		{
+			postv1.POST("", handler.CreatePost)          //创建文章
+			postv1.PUT(":postID", handler.UpdatePost)    //修改文章
+			postv1.DELETE(":postID", handler.DeletePost) //删除文章
+			postv1.GET(":postID", handler.GetPost)       //获取文章
+			postv1.GET("", handler.ListPost)             //查询文章列表
+		}
+	}
 }
 
 // InstallGenericAPI 注册业务无关的路由，例如 pprof、404 处理等.

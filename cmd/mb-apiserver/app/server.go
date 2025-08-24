@@ -7,6 +7,7 @@
 package app
 
 import (
+	"fmt"
 	"github.com/iWuxc/miniblog/cmd/mb-apiserver/app/options"
 	"github.com/iWuxc/miniblog/internal/pkg/log"
 	"github.com/iWuxc/miniblog/pkg/version"
@@ -88,6 +89,7 @@ func run(opts *options.ServerOptions) error {
 	if err := viper.Unmarshal(opts); err != nil {
 		return err
 	}
+	fmt.Printf("opts: %+v\n", opts)
 
 	// 对命令行选项值进行校验
 	if err := opts.Validate(); err != nil {

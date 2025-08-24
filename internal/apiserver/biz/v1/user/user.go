@@ -12,7 +12,7 @@ import (
 	apiv1 "github.com/iWuxc/miniblog/pkg/api/apiserver/v1"
 	"github.com/jinzhu/copier"
 	"github.com/onexstack/onexstack/pkg/authn"
-	"github.com/onexstack/onexstack/pkg/authz"
+	//"github.com/onexstack/onexstack/pkg/authz"
 	"github.com/onexstack/onexstack/pkg/store/where"
 	"github.com/onexstack/onexstack/pkg/token"
 	"golang.org/x/sync/errgroup"
@@ -42,14 +42,14 @@ type UserExpansion interface {
 // userBiz 是 UserBiz 接口的实现.
 type userBiz struct {
 	store store.IStore
-	authz *authz.Authz
+	//authz *authz.Authz
 }
 
 // 确保 userBiz 实现了 UserBiz 接口.
 var _ UserBiz = (*userBiz)(nil)
 
-func New(store store.IStore, authz *authz.Authz) UserBiz {
-	return &userBiz{store: store, authz: authz}
+func New(store store.IStore) *userBiz {
+	return &userBiz{store: store}
 }
 
 // Login 实现 UserBiz 接口中的 Login 方法.
@@ -117,10 +117,10 @@ func (b *userBiz) Create(ctx context.Context, rq *apiv1.CreateUserRequest) (*api
 		return nil, err
 	}
 
-	if _, err := b.authz.AddGroupingPolicy(userM.UserID, known.RoleUser); err != nil {
-		log.W(ctx).Errorw("Failed to add grouping policy for user", "user", userM.UserID, "role", known.RoleUser)
-		return nil, errno.ErrAddRole.WithMessage(err.Error())
-	}
+	//if _, err := b.authz.AddGroupingPolicy(userM.UserID, known.RoleUser); err != nil {
+	//	log.W(ctx).Errorw("Failed to add grouping policy for user", "user", userM.UserID, "role", known.RoleUser)
+	//	return nil, errno.ErrAddRole.WithMessage(err.Error())
+	//}
 
 	return &apiv1.CreateUserResponse{UserID: userM.UserID}, nil
 }
@@ -160,10 +160,10 @@ func (b *userBiz) Delete(ctx context.Context, rq *apiv1.DeleteUserRequest) (*api
 		return nil, err
 	}
 
-	if _, err := b.authz.RemoveGroupingPolicy(rq.GetUserID(), known.RoleUser); err != nil {
-		log.W(ctx).Errorw("Failed to remove grouping policy for user", "user", rq.GetUserID(), "role", known.RoleUser)
-		return nil, errno.ErrRemoveRole.WithMessage(err.Error())
-	}
+	//if _, err := b.authz.RemoveGroupingPolicy(rq.GetUserID(), known.RoleUser); err != nil {
+	//	log.W(ctx).Errorw("Failed to remove grouping policy for user", "user", rq.GetUserID(), "role", known.RoleUser)
+	//	return nil, errno.ErrRemoveRole.WithMessage(err.Error())
+	//}
 
 	return &apiv1.DeleteUserResponse{}, nil
 }
