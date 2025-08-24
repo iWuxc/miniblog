@@ -24,7 +24,9 @@ require (
 
 require (
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.2.0 // indirect
+	github.com/lyft/protoc-gen-star v0.6.0 // indirect
 	github.com/sony/sonyflake v1.2.0 // indirect
 )
 

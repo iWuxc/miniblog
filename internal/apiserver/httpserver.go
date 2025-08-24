@@ -30,7 +30,13 @@ func (c *ServerConfig) NewGinServer() server.Server {
 	engine := gin.New()
 
 	// 注册全局中间件，用于恢复 panic、设置 HTTP 头、添加请求 ID 等
-	engine.Use(gin.Recovery(), mw.NoCache, mw.Cors, mw.Secure, mw.RequestIDMiddleware())
+	engine.Use(
+		gin.Recovery(),
+		mw.NoCache,
+		mw.Cors,
+		mw.Secure,
+		mw.RequestIDMiddleware(),
+		mw.AuthnBypasswMiddleware())
 
 	//注册REST API路由
 	c.InstallRESTAPI(engine)
