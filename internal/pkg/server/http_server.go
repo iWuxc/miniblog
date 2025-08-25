@@ -8,6 +8,7 @@ package server
 
 import (
 	"context"
+	"crypto/tls"
 	"errors"
 	"github.com/iWuxc/miniblog/internal/pkg/log"
 	genericoptions "github.com/onexstack/onexstack/pkg/options"
@@ -20,11 +21,16 @@ type HTTPServer struct {
 }
 
 // NewHTTPServer 创建一个新的 HTTP 服务器实例.
-func NewHttpServer(httpOptions *genericoptions.HTTPOptions, handler http.Handler) *HTTPServer {
+func NewHttpServer(httpOptions *genericoptions.HTTPOptions, tlsOptions *genericoptions.TLSOptions, handler http.Handler) *HTTPServer {
+	var tlsConfig *tls.Config
+	if tlsOptions != nil && tlsOptions.UseTLS {
+		tlsConfig = tlsOptions.MustTLSConfig()
+	}
 	return &HTTPServer{
 		srv: &http.Server{
-			Addr:    httpOptions.Addr,
-			Handler: handler,
+			Addr:      httpOptions.Addr,
+			Handler:   handler,
+			TLSConfig: tlsConfig,
 		},
 	}
 }
@@ -32,9 +38,17 @@ func NewHttpServer(httpOptions *genericoptions.HTTPOptions, handler http.Handler
 // RunOrDie 启动 HTTP 服务器并在出错时记录致命错误.
 func (s *HTTPServer) RunOrDie() {
 	log.Infow("Start to listening the incoming requests", "protocol", protocolName(s.srv), "addr", s.srv.Addr)
-	if err := s.srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-		log.Fatalw("Failed to server HTTP(s) server", "err", err)
+	// 默认启动 HTTP 服务器
+	serveFn := func() error { return s.srv.ListenAndServe() }
+	if s.srv.TLSConfig != nil {
+		serveFn = func() error {
+			return s.srv.ListenAndServeTLS("", "")
+		}
+		if err := serveFn(); err != nil && errors.Is(err, http.ErrServerClosed) {
+			log.Fatalw("Failed to server HTTP(s) server", "err", err.Error())
+		}
 	}
+
 }
 
 // GracefulStop 优雅地关闭 HTTP 服务器.

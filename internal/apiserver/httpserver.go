@@ -41,7 +41,7 @@ func (c *ServerConfig) NewGinServer() server.Server {
 	//注册REST API路由
 	c.InstallRESTAPI(engine)
 
-	httpsrv := server.NewHttpServer(c.cfg.HTTPOptions, engine)
+	httpsrv := server.NewHttpServer(c.cfg.HTTPOptions, c.cfg.TLSOptions, engine)
 
 	return &ginServer{srv: httpsrv}
 }
