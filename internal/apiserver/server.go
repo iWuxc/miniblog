@@ -9,12 +9,15 @@ package apiserver
 import (
 	"context"
 	"github.com/iWuxc/miniblog/internal/apiserver/biz"
+	"github.com/iWuxc/miniblog/internal/apiserver/model"
 	validation "github.com/iWuxc/miniblog/internal/apiserver/pkg/vaildation"
 	"github.com/iWuxc/miniblog/internal/apiserver/store"
 	"github.com/iWuxc/miniblog/internal/pkg/contextx"
 	"github.com/iWuxc/miniblog/internal/pkg/known"
 	"github.com/iWuxc/miniblog/internal/pkg/log"
+	mw "github.com/iWuxc/miniblog/internal/pkg/middleware/gin"
 	"github.com/iWuxc/miniblog/internal/pkg/server"
+	"github.com/iWuxc/miniblog/pkg/auth"
 	genericoptions "github.com/onexstack/onexstack/pkg/options"
 	"github.com/onexstack/onexstack/pkg/store/where"
 	"github.com/onexstack/onexstack/pkg/token"
@@ -64,9 +67,11 @@ type UnionServer struct {
 
 // ServerConfig 包含服务器的核心依赖和配置.
 type ServerConfig struct {
-	cfg *Config
-	biz biz.IBiz
-	val *validation.Validator
+	cfg       *Config
+	biz       biz.IBiz
+	val       *validation.Validator
+	retriever mw.UserRetriever
+	authz     *auth.Authz
 }
 
 // NewUnionServer 根据配置创建联合服务器.
@@ -143,14 +148,31 @@ func (cfg *Config) NewServerConfig() (*ServerConfig, error) {
 
 	store := store.NewStore(db)
 
+	authz, err := auth.NewAuthz(store.DB(context.TODO()))
+	if err != nil {
+		return nil, err
+	}
+
 	return &ServerConfig{
-		cfg: cfg,
-		biz: biz.NewBiz(store),
-		val: validation.New(store),
+		cfg:       cfg,
+		biz:       biz.NewBiz(store),
+		val:       validation.New(store),
+		retriever: &UserRetriever{store: store},
+		authz:     authz,
 	}, nil
 }
 
 // NewDB 创建一个 *gorm.DB 实例.
 func (cfg *Config) NewDB() (*gorm.DB, error) {
 	return cfg.MySQLOptions.NewDB()
+}
+
+// UserRetriever 定义一个用户数据获取器. 用来获取用户信息.
+type UserRetriever struct {
+	store store.IStore
+}
+
+// GetUser 根据用户 ID 获取用户信息.
+func (r *UserRetriever) GetUser(ctx context.Context, userID string) (*model.UserM, error) {
+	return r.store.User().Get(ctx, where.F("userID", userID))
 }

@@ -8,13 +8,15 @@ package apiserver
 
 import (
 	"context"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/selector"
 	genericvalidation "github.com/onexstack/onexstack/pkg/validation"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 
 	handler "github.com/iWuxc/miniblog/internal/apiserver/handler/grpc"
-	mv "github.com/iWuxc/miniblog/internal/pkg/middleware/grpc"
+	mw "github.com/iWuxc/miniblog/internal/pkg/middleware/grpc"
 	"github.com/iWuxc/miniblog/internal/pkg/server"
 	apiv1 "github.com/iWuxc/miniblog/pkg/api/apiserver/v1"
 )
@@ -42,16 +44,19 @@ func (c *ServerConfig) NewGRPCServerOr() (server.Server, error) {
 		//注意拦截器顺序
 		grpc.ChainUnaryInterceptor(
 			//请求ID拦截器
-			mv.RequestIDInterceptor(),
+			mw.RequestIDInterceptor(),
 
-			// Bypass 拦截器，通过所有请求的认证
-			mv.AuthnBypasswInterceptor(),
+			// 认证拦截器
+			selector.UnaryServerInterceptor(mw.AuthnInterceptor(c.retriever), NewAuthnWhiteListMatcher()),
+
+			// 授权拦截器
+			selector.UnaryServerInterceptor(mw.AuthzInterceptor(c.authz), NewAuthzWhiteListMatcher()),
 
 			// 请求默认值设置拦截器
-			mv.DefaulterInterceptor(),
+			mw.DefaulterInterceptor(),
 
 			// 数据校验拦截器
-			mv.ValidatorInterceptor(genericvalidation.NewValidator(c.val)),
+			mw.ValidatorInterceptor(genericvalidation.NewValidator(c.val)),
 		),
 	}
 
@@ -107,4 +112,30 @@ func (s *grpcServer) RunOrDie() {
 // GracefulStop 优雅停止 HTTP 和 gRPC 服务器.
 func (s *grpcServer) GracefulStop(ctx context.Context) {
 	s.stop(ctx)
+}
+
+// NewAuthnWhiteListMatcher 创建认证白名单匹配器.
+func NewAuthnWhiteListMatcher() selector.Matcher {
+	whitelist := map[string]struct{}{
+		apiv1.MiniBlog_Healthz_FullMethodName:    {},
+		apiv1.MiniBlog_CreateUser_FullMethodName: {},
+		apiv1.MiniBlog_Login_FullMethodName:      {},
+	}
+	return selector.MatchFunc(func(ctx context.Context, call interceptors.CallMeta) bool {
+		_, ok := whitelist[call.FullMethod()]
+		return !ok
+	})
+}
+
+// NewAuthzWhiteListMatcher 创建授权白名单匹配器.
+func NewAuthzWhiteListMatcher() selector.Matcher {
+	whitelist := map[string]struct{}{
+		apiv1.MiniBlog_Healthz_FullMethodName:    {},
+		apiv1.MiniBlog_CreateUser_FullMethodName: {},
+		apiv1.MiniBlog_Login_FullMethodName:      {},
+	}
+	return selector.MatchFunc(func(ctx context.Context, call interceptors.CallMeta) bool {
+		_, ok := whitelist[call.FullMethod()]
+		return !ok
+	})
 }

@@ -61,7 +61,7 @@ func (c *ServerConfig) InstallRESTAPI(engine *gin.Engine) {
 	engine.POST("/login", handler.Login)
 	engine.PUT("refresh-token", handler.RefreshToken)
 
-	var authMiddlewares []gin.HandlerFunc
+	authMiddlewares := []gin.HandlerFunc{mw.AuthnMiddleware(c.retriever), mw.AuthzMiddleware(c.authz)}
 
 	// 注册 v1 版本 API 路由分组
 	v1 := engine.Group("v1")
